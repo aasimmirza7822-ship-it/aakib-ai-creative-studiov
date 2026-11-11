@@ -1,0 +1,41 @@
+# This is a basic workflow to help you get started with Actions
+
+name: AAKIB AI SUPER TEAM APK Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract Android project ZIP
+        run: |
+          mkdir -p project
+          unzip -o AAKIB_AI_SUPER_TEAM_Android_Starter.zip -d project
+          find project -name gradlew -exec chmod +x {} \;
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build APK
+        run: |
+          cd project
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AAKIB-AI-SUPER-TEAM-APK
+          path: project/**/build/outputs/apk/debug/*.apk
+          
